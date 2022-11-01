@@ -1,6 +1,7 @@
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utils/error-handler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const ApiFeature = require("../utils/apiFeatures");
 
 // admin
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
@@ -12,11 +13,23 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
-  const products = await Product.find();
+  // const products = await Product.find();
+  // comment top one now we use apiFeature to use find with search included too
+
+  const resultPerPage = 5;
+  const productsCount = await Product.countDocuments();
+
+  const apiFeature = new ApiFeature(Product.find(), req.query)
+    .searchByName()
+    .filter()
+    .pagination(resultPerPage);
+
+  const products = await apiFeature.query;
 
   return res.status(200).json({
     success: true,
     products,
+    productsCount,
   });
 });
 
