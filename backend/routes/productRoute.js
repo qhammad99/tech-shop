@@ -11,7 +11,7 @@ const {
   createProductReview,
   getProductReviews,
   deleteProductReview,
-} = require("../controllers/productController");
+} = require("../controllers/productCtrl");
 
 router.route("/products").get(getAllProducts);
 router

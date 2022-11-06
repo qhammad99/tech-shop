@@ -126,7 +126,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 
 // own profile deails
 exports.getProfileDetails = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user._id);
 
   res.status(200).json({
     success: true,
@@ -135,7 +135,7 @@ exports.getProfileDetails = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user.id).select("+password");
+  const user = await User.findById(req.user._id).select("+password");
 
   const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
@@ -155,7 +155,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
   };
   // later add avatar setting
 
-  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+  const user = await User.findByIdAndUpdate(req.user._id, newUserData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -209,7 +209,7 @@ exports.updateRold = catchAsyncErrors(async (req, res, next) => {
 // delete user --Admin
 exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
   // remove avatar too
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params._id);
 
   if (!user) return next(new ErrorHandler("Invalid email or password", 401));
 
